@@ -102,10 +102,10 @@
 						if( scrollTopDist < elTopDist ){
 							
 							// If a clone exists, we destroy the clone
-							if( element.className.indexOf('hasClone') != -1 ){
-								var cln = document.querySelector(elsSelectors[i] + '.clone');
-								element.className = element.className.replace('hasClone','');
-								cln.parentNode.removeChild(cln);
+							if( element.className.indexOf('hasPlHolder') != -1 ){
+								var divPl = document.querySelector('.placeholder_' + i);
+								element.className = element.className.replace('hasPlHolder','');
+								divPl.parentNode.removeChild(divPl);
 							}
 
 							// Return element to normal state
@@ -116,12 +116,14 @@
 						if( scrollTopDist >= elTopDist){
 							
 							// If a clone dosn't exists, we clone the element
-							if( element.className.indexOf('hasClone') == -1 ){
-								element.className += ' hasClone';
-								var cln = element.cloneNode(true);
-								cln.className = cln.className.replace('hasClone','') + ' clone';
-								cln.style.opacity = '0';
-								element.parentNode.insertBefore(cln, element.nextSibling);
+							if( element.className.indexOf('hasPlHolder') == -1 ){
+								element.className += ' hasPlHolder';
+								var divPl = document.createElement('div');
+								divPl.style.width = element.clientWidth + 'px';
+								divPl.style.height = element.clientHeight + 'px';
+								divPl.className = divPl.className.replace('hasPlHolder','') + ' placeholder_' + i;
+								divPl.style.opacity = '0';
+								element.parentNode.insertBefore(divPl, element.nextSibling);
 							}
 
 							// Fix the element
@@ -135,7 +137,9 @@
 						if( scrollTopDist + elHeight >= tarTopDist ){
 							// Fix the element
 							element.style.position = 'absolute';
-							element.style.top = tarTopDist - tarHeight - tarPaddingTop - tarMarginTop - elMarginBottom - elPaddingBottom + 'px';							
+
+							element.style.top = tarTopDist - elHeight - tarPaddingTop - tarMarginTop - elMarginBottom - elPaddingBottom + 'px';	
+
 						}
 
 					}, false);
