@@ -11,8 +11,8 @@
 	function init(){
 		
 		var a = new Fixuntil({ 
-			"elements" : ['header','.el11'], 
-			"targets" : ['.el2','.el15'] 
+			"elements" : ['.el6','.el11','.el2'], 
+			"targets" : ['.el8','.el15','.el5'] 
 		});
 		
 	};
