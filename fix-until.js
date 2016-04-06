@@ -84,18 +84,18 @@
 					var element = els[i];
 					var target = targs[i];
 
-					var elTopDist = element.offsetTop;
+					var elTopDist = element.getBoundingClientRect().top;
 					var elHeight = element.offsetHeight;
 					var elPaddingBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-bottom'));
 					var elMarginBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-bottom'));
 
-					var tarTopDist = target.offsetTop;
+					var tarTopDist = target.getBoundingClientRect().top;
 					var tarHeight = target.offsetHeight;
 					var tarPaddingTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('padding-top'));
 					var tarMarginTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('margin-top'));
 
 					window.addEventListener("scroll", function(){
-												
+						
 						var scrollTopDist = window.scrollY;	
 						
 						// If the scroll has not yet reached the element
@@ -133,12 +133,12 @@
 							element.style.backgroundColor = '#e6e6e6';
 
 						}
-
-						if( scrollTopDist + elHeight >= tarTopDist ){
+						
+						if( scrollTopDist + elHeight + tarPaddingTop + tarMarginTop >= tarTopDist ){
 							// Fix the element
 							element.style.position = 'absolute';
-
-							element.style.top = tarTopDist - elHeight - tarPaddingTop - tarMarginTop - elMarginBottom - elPaddingBottom + 'px';	
+							
+							element.style.top = tarTopDist - elHeight - tarPaddingTop - tarMarginTop + 'px';	
 
 						}
 
