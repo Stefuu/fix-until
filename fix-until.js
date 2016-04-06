@@ -1,5 +1,9 @@
 (function(){
+	
 	console.log('Fixuntil 1.0.0');
+
+	'use strict';
+
 	/**
 	 * Constructor
 	 * @param {Object} settings
@@ -63,78 +67,80 @@
 	 */
 	Fixuntil.prototype.init = function(){
 		
-		var elsSelectors = this.getElements();
-		var tarSelectors = this.getTargets();
-		var els = this.selectorToElement( elsSelectors );
-		var targs = this.selectorToElement( tarSelectors );
-					
-		var size = els.length;
-	
+		var self = this;
 			var i = 0;
 			
-			for( i; i < size; i++ ){
-				
-				var index = i;
+			for( i; i < self.selectorToElement( self.getElements() ).length; i++ ){
+								
+				(function(i){
 
-				var element = els[i];
-				var target = targs[i];
-
-				var elTopDist = element.offsetTop;
-				var elHeight = element.offsetHeight;
-				var elPaddingBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-bottom'));
-				var elMarginBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-bottom'));
-
-				var tarTopDist = target.offsetTop;
-				var tarHeight = target.offsetHeight;
-				var tarPaddingTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('padding-top'));
-				var tarMarginTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('margin-top'));
-				
-
-				window.addEventListener("scroll", function(){
-
-					var scrollTopDist = window.scrollY;	
+					var elsSelectors = self.getElements();
+					var tarSelectors = self.getTargets();
+					var els = self.selectorToElement( elsSelectors );
+					var targs = self.selectorToElement( tarSelectors );
 					
-					// If the scroll has not yet reached the element
-					if( scrollTopDist < elTopDist ){
+					var size = els.length;
+
+					var element = els[i];
+					var target = targs[i];
+
+					var elTopDist = element.offsetTop;
+					var elHeight = element.offsetHeight;
+					var elPaddingBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-bottom'));
+					var elMarginBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-bottom'));
+
+					var tarTopDist = target.offsetTop;
+					var tarHeight = target.offsetHeight;
+					var tarPaddingTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('padding-top'));
+					var tarMarginTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('margin-top'));
+
+					window.addEventListener("scroll", function(){
+												
+						var scrollTopDist = window.scrollY;	
 						
-						// If a clone exists, we destroy the clone
-						if( element.className.indexOf('hasClone') != -1 ){
-							var cln = document.querySelector(elsSelectors[index] + '.clone');
-							element.className = element.className.replace('hasClone','');
-							cln.parentNode.removeChild(cln);
+						// If the scroll has not yet reached the element
+						if( scrollTopDist < elTopDist ){
+							
+							// If a clone exists, we destroy the clone
+							if( element.className.indexOf('hasClone') != -1 ){
+								var cln = document.querySelector(elsSelectors[i] + '.clone');
+								element.className = element.className.replace('hasClone','');
+								cln.parentNode.removeChild(cln);
+							}
+
+							// Return element to normal state
+							element.style.position = 'inherit';
+							element.style.width = '';
+						}
+						
+						if( scrollTopDist >= elTopDist){
+							
+							// If a clone dosn't exists, we clone the element
+							if( element.className.indexOf('hasClone') == -1 ){
+								element.className += ' hasClone';
+								var cln = element.cloneNode(true);
+								cln.className = cln.className.replace('hasClone','') + ' clone';
+								cln.style.opacity = '0';
+								element.parentNode.insertBefore(cln, element.nextSibling);
+							}
+
+							// Fix the element
+							element.style.width = element.clientWidth + 'px';
+							element.style.position = 'fixed';
+							element.style.top = '0';						
+							element.style.backgroundColor = '#e6e6e6';
+
 						}
 
-						// Return element to normal state
-						element.style.position = 'inherit';
-						element.style.width = '';
-					}
-					
-					if( scrollTopDist >= elTopDist){
-						
-						// If a clone dosn't exists, we clone the element
-						if( element.className.indexOf('hasClone') == -1 ){
-							element.className += ' hasClone';
-							var cln = element.cloneNode(true);
-							cln.className = cln.className.replace('hasClone','') + ' clone';
-							cln.style.opacity = '0';
-							element.parentNode.insertBefore(cln, element.nextSibling);
+						if( scrollTopDist + elHeight >= tarTopDist ){
+							// Fix the element
+							element.style.position = 'absolute';
+							element.style.top = tarTopDist - tarHeight - tarPaddingTop - tarMarginTop - elMarginBottom - elPaddingBottom + 'px';							
 						}
 
-						// Fix the element
-						element.style.width = element.clientWidth + 'px';
-						element.style.position = 'fixed';
-						element.style.top = '0';						
+					}, false);
 
-
-					}
-
-					if( scrollTopDist + elHeight >= tarTopDist ){
-						// Fix the element
-						element.style.position = 'absolute';
-						element.style.top = tarTopDist - tarHeight - tarPaddingTop - tarMarginTop - elMarginBottom - elPaddingBottom + 'px';							
-					}
-
-				});
+				})(i);
 			}
 
 	};
