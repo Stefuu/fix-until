@@ -9,6 +9,6 @@ A simple javascript lib that fixes elements on scroll, until they reach the resp
 ```javascript
 var pairs = new Fixuntil({ 
 		"elements" : ['.myDiv','.myHeader'], 
-		"targets" : ['.myTargetDiv','.myTargetElement'] 
+		"targets" : ['.myDivTarget','.myHeaderTarget'] 
 	});
 ```
