@@ -82,30 +82,37 @@
 					var size = els.length;
 
 					var element = els[i];
+
 					var target = targs[i];
 
-					var elTopDist = element.getBoundingClientRect().top;
+					var elTopDist = element.getBoundingClientRect().top + window.scrollY;
 					var elHeight = element.offsetHeight;
 					var elPaddingBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-bottom'));
 					var elMarginBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-bottom'));
 
-					var tarTopDist = target.getBoundingClientRect().top;
+					var tarTopDist = target.getBoundingClientRect().top + window.scrollY;
 					var tarHeight = target.offsetHeight;
 					var tarPaddingTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('padding-top'));
 					var tarMarginTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('margin-top'));
 
+						
+
 					window.addEventListener("scroll", function(){
-						
+
 						var scrollTopDist = window.scrollY;	
-						
+							
+							element.style.position = 'inherit';
+							element.style.width = '';
+
 						// If the scroll has not yet reached the element
 						if( scrollTopDist < elTopDist ){
-							
-							// If a clone exists, we destroy the clone
+
+							// If a placeholder exists, destroy it
 							if( element.className.indexOf('hasPlHolder') != -1 ){
-								var divPl = document.querySelector('.placeholder_' + i);
+								var divPl = element.nextSibling;
 								element.className = element.className.replace('hasPlHolder','');
 								divPl.parentNode.removeChild(divPl);
+
 							}
 
 							// Return element to normal state
@@ -114,18 +121,20 @@
 						}
 						
 						if( scrollTopDist >= elTopDist){
-							
-							// If a clone dosn't exists, we clone the element
+
+							// If a placeholder dosn't exists, create one
 							if( element.className.indexOf('hasPlHolder') == -1 ){
+								
 								element.className += ' hasPlHolder';
 								var divPl = document.createElement('div');
 								divPl.style.width = element.clientWidth + 'px';
 								divPl.style.height = element.clientHeight + 'px';
-								divPl.className = divPl.className.replace('hasPlHolder','') + ' placeholder_' + i;
+								divPl.className = divPl.className.replace('hasPlHolder','') + ' placeholder';
 								divPl.style.opacity = '0';
 								element.parentNode.insertBefore(divPl, element.nextSibling);
 							}
-
+							//element.style.position = 'inherit';
+							//elTopDist = element.getBoundingClientRect().top + window.scrollY
 							// Fix the element
 							element.style.width = element.clientWidth + 'px';
 							element.style.position = 'fixed';
@@ -134,11 +143,29 @@
 
 						}
 						
-						if( scrollTopDist + elHeight + tarPaddingTop + tarMarginTop >= tarTopDist ){
-							// Fix the element
-							element.style.position = 'absolute';
+						if( tarTopDist - elHeight - scrollTopDist <= 0  ){
 							
-							element.style.top = tarTopDist - elHeight - tarPaddingTop - tarMarginTop + 'px';	
+							var firstRelative = element;
+
+							while( firstRelative.parentNode instanceof Element ){
+								
+								if( window.getComputedStyle(firstRelative.parentNode, null).getPropertyValue('position') == 'relative' ){
+								
+									firstRelative = firstRelative.parentNode;
+									break;
+								}
+
+								firstRelative = firstRelative.parentNode;	
+								
+							}
+
+							
+							var firstRelativeDist = firstRelative.getBoundingClientRect().top + scrollTopDist;
+
+							// Fix the element
+							element.style.width = element.clientWidth + 'px';
+							element.style.position = 'absolute';
+							element.style.top = tarTopDist - elHeight - tarPaddingTop - tarMarginTop - firstRelativeDist + 'px';	
 
 						}
 

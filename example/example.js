@@ -10,11 +10,15 @@
 
 	function init(){
 		
-		var a = new Fixuntil({ 
-			"elements" : ['.el6','.el11','.el2'], 
-			"targets" : ['.el8','.el15','.el5'] 
+		var pairA = new Fixuntil({ 
+			"elements" : ['.el10'], 
+			"targets" : ['.el8']
 		});
 		
+		var pairB = new Fixuntil({ 
+			"elements" : ['.el1'], 
+			"targets" : ['.el3']
+		});
 	};
 
 	ready(init);
