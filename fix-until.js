@@ -210,7 +210,7 @@
 							}
 							
 							// Fix the element
-							element.style.width = element.clientWidth + 'px';
+							element.style.width = window.getComputedStyle(element, null).getPropertyValue('width');
 							element.style.position = 'fixed';
 							element.style.left = elLeftDist - elMarginLeft + 'px';
 							element.style.top = '0';						
@@ -221,7 +221,7 @@
 						if( tarTopDist - elMarginBottom - elPaddingBottom - tarPaddingTop - tarMarginTop - elHeight - scrollTopDist <= 0  ){
 							
 							// Position the sticky element abouve the target element
-							element.style.width = element.clientWidth + 'px';
+							element.style.width = window.getComputedStyle(element, null).getPropertyValue('width');
 							element.style.position = 'absolute';
 							element.style.left = leftDiff - elMarginLeft+ 'px';
 							element.style.top = tarTopDist - elMarginBottom - elPaddingBottom - elHeight - elBorderBottom - tarBorderBottom - tarPaddingTop - tarMarginTop - firstRelativeTopDist + 'px';	
