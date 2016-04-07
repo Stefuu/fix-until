@@ -11,8 +11,8 @@
 	function init(){
 		
 		var pairA = new Fixuntil({ 
-			"elements" : ['.el10'], 
-			"targets" : ['.el8']
+			"elements" : [document.querySelector('.el9')], 
+			"targets" : [document.querySelector('.el12')]
 		});
 		
 		var pairB = new Fixuntil({ 

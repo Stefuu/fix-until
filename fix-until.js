@@ -12,7 +12,11 @@
 	window.Fixuntil = function(settings){
 		this.elements = settings.elements;
 		this.targets = settings.targets;
-		this.init();
+		if (document.readyState != 'loading'){
+			this.init();
+		}else{
+			document.addEventListener('DOMContentLoaded', this.init);
+		}
 	};
 
 	/**
@@ -70,45 +74,115 @@
 		var self = this;
 			var i = 0;
 			
-			for( i; i < self.selectorToElement( self.getElements() ).length; i++ ){
-								
+			// For each element in the elments array
+			for( i; i < self.getElements().length; i++ ){
+				
+				// The anonymous function bellow is used to transfer
+				// the 'for' index to the scroll event listener scope
 				(function(i){
 
+					// Get the elements selectors
 					var elsSelectors = self.getElements();
-					var tarSelectors = self.getTargets();
-					var els = self.selectorToElement( elsSelectors );
-					var targs = self.selectorToElement( tarSelectors );
-					
-					var size = els.length;
 
+					// Get the targets selectors
+					var tarSelectors = self.getTargets();
+					
+					// Uses the selectors to create Element arrays if the array is
+					if( !(elsSelectors[0] instanceof Element) ){
+						var els = self.selectorToElement( elsSelectors );
+						
+					}else{
+						var els = elsSelectors;
+					}
+
+					// Uses the selectors to create Element arrays if the array is
+					if( !(tarSelectors[0] instanceof Element) ){
+						var targs = self.selectorToElement( tarSelectors );
+					}else{
+						var targs = tarSelectors;
+					}
+					
+					// The sticky element
 					var element = els[i];
 
+					// The target element were the sticky element will stop
 					var target = targs[i];
 
+					// The distance from the sticky element to the page top
 					var elTopDist = element.getBoundingClientRect().top + window.scrollY;
+
+					// The left distance fo the sticky element
+					var elLeftDist = element.getBoundingClientRect().left;
+
+					// The sticky element height
 					var elHeight = element.offsetHeight;
+
+					// The sticky element padding-bottom
 					var elPaddingBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('padding-bottom'));
+
+					// The sticky element margin-bottom
 					var elMarginBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-bottom'));
+					
+					var elMarginLeft = parseInt(window.getComputedStyle(element, null).getPropertyValue('margin-left'));
+					
+					var elBorderBottom = parseInt(window.getComputedStyle(element, null).getPropertyValue('border-bottom'));
 
+					// The distance from the target element to the page top
 					var tarTopDist = target.getBoundingClientRect().top + window.scrollY;
+					
+					// The target element height
 					var tarHeight = target.offsetHeight;
+					
+					// The target element padding-bottom
 					var tarPaddingTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('padding-top'));
+					
+					// The target element margin-bottom
 					var tarMarginTop = parseInt(window.getComputedStyle(target, null).getPropertyValue('margin-top'));
+					
+					var tarBorderBottom = parseInt(window.getComputedStyle(target, null).getPropertyValue('border-top'));
 
+					// Finds the first element whit position relative up the DOM
+					// and get the distance from that element the top
+					var firstRelative = element;
+					while( firstRelative.parentNode instanceof Element ){
 						
+						if( window.getComputedStyle(firstRelative.parentNode, null).getPropertyValue('position') == 'relative' ){
+						
+							firstRelative = firstRelative.parentNode;
+							break;
+						}
 
+						firstRelative = firstRelative.parentNode;	
+						
+					}
+					
+					// The margin-bottom of the first element with position relative up the DOM tree
+					var firstRelativePaddingLeft = parseInt(window.getComputedStyle(firstRelative, null).getPropertyValue('padding-left'));
+					
+					// The margin-left of the first element with position relative up the DOM tree
+					var firstRelativeMarginLeft = parseInt(window.getComputedStyle(firstRelative, null).getPropertyValue('margin-left'));
+					
+					// The top distance of the first element with position relative up the DOM tree
+					var firstRelativeTopDist = firstRelative.getBoundingClientRect().top +  window.scrollY;
+					
+					// The left distance of the first element with position relative up the DOM tree
+					var firstRelativeLeftDist = firstRelative.getBoundingClientRect().left;
+					
+					// The difference between the left position of the sticky element and the first element with position relative up the DOM tree
+					var leftDiff = elLeftDist - firstRelativeLeftDist;
+
+					// Scroll event listener
 					window.addEventListener("scroll", function(){
 
+						// Get the scroll position
 						var scrollTopDist = window.scrollY;	
-							
-							element.style.position = 'inherit';
-							element.style.width = '';
 
 						// If the scroll has not yet reached the element
 						if( scrollTopDist < elTopDist ){
 
-							// If a placeholder exists, destroy it
+							// If a placeholder element exists, destroy it
 							if( element.className.indexOf('hasPlHolder') != -1 ){
+								
 								var divPl = element.nextSibling;
 								element.className = element.className.replace('hasPlHolder','');
 								divPl.parentNode.removeChild(divPl);
@@ -120,9 +194,10 @@
 							element.style.width = '';
 						}
 						
+						// If the area where the element must be sticky has been reached
 						if( scrollTopDist >= elTopDist){
 
-							// If a placeholder dosn't exists, create one
+							// If a placeholder doesn't exists, create one
 							if( element.className.indexOf('hasPlHolder') == -1 ){
 								
 								element.className += ' hasPlHolder';
@@ -133,39 +208,23 @@
 								divPl.style.opacity = '0';
 								element.parentNode.insertBefore(divPl, element.nextSibling);
 							}
-							//element.style.position = 'inherit';
-							//elTopDist = element.getBoundingClientRect().top + window.scrollY
+							
 							// Fix the element
 							element.style.width = element.clientWidth + 'px';
 							element.style.position = 'fixed';
+							element.style.left = elLeftDist - elMarginLeft + 'px';
 							element.style.top = '0';						
-							element.style.backgroundColor = '#e6e6e6';
 
 						}
 						
-						if( tarTopDist - elHeight - scrollTopDist <= 0  ){
+						// If the scroll is bellow the area where the element must be fixed
+						if( tarTopDist - elMarginBottom - elPaddingBottom - tarPaddingTop - tarMarginTop - elHeight - scrollTopDist <= 0  ){
 							
-							var firstRelative = element;
-
-							while( firstRelative.parentNode instanceof Element ){
-								
-								if( window.getComputedStyle(firstRelative.parentNode, null).getPropertyValue('position') == 'relative' ){
-								
-									firstRelative = firstRelative.parentNode;
-									break;
-								}
-
-								firstRelative = firstRelative.parentNode;	
-								
-							}
-
-							
-							var firstRelativeDist = firstRelative.getBoundingClientRect().top + scrollTopDist;
-
-							// Fix the element
+							// Position the sticky element abouve the target element
 							element.style.width = element.clientWidth + 'px';
 							element.style.position = 'absolute';
-							element.style.top = tarTopDist - elHeight - tarPaddingTop - tarMarginTop - firstRelativeDist + 'px';	
+							element.style.left = leftDiff - elMarginLeft+ 'px';
+							element.style.top = tarTopDist - elMarginBottom - elPaddingBottom - elHeight - elBorderBottom - tarBorderBottom - tarPaddingTop - tarMarginTop - firstRelativeTopDist + 'px';	
 
 						}
 
