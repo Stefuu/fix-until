@@ -11,14 +11,8 @@
 	function init(){
 				
 		var pairB = new Fixuntil({ 
-			"elements" : [
-							'.el1',
-							'.el9'
-						 ], 
-			"targets" : [
-							['.elcleiton','.el'], 
-							'.el12'
-						]
+			"elements" : ['.el1','.el10'], 
+			"targets" : ['.el4','.el7']
 		});
 	};
 
