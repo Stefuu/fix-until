@@ -9,15 +9,10 @@
 	};
 
 	function init(){
-		
-		var pairA = new Fixuntil({ 
-			"elements" : [document.querySelector('.el9')], 
-			"targets" : [document.querySelector('.el12')]
-		});
-		
+				
 		var pairB = new Fixuntil({ 
-			"elements" : ['.el1'], 
-			"targets" : ['.el3']
+			"elements" : ['.el1','.el10'], 
+			"targets" : ['.el4','.el7']
 		});
 	};
 
