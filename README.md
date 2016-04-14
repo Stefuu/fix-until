@@ -6,8 +6,7 @@ A simple javascript lib that fixes elements on scroll, until they reach the resp
 - Insert the script into your page head tag
 - Create an instance of Fixuntil as the following:
 
-- With simple element-target pairs
-- The element .myDiv will stop at the element .myDivTarget and so on
+With simple element-target pairs, the element .myDiv will stop at the element .myDivTarget and so on
 
 ```javascript
 var pairsA = new Fixuntil({ 
@@ -18,8 +17,7 @@ var pairsA = new Fixuntil({
 
 ```
 
-- With multiple possible targets to an element
-- The element .el1 will stop at the element .el3, if it exists, and will stop at the element .el4 if .el3 does not exists, .el2 will stop at el .el7
+With multiple possible targets to an element, the element .el1 will stop at the element .el3, if it exists, and will stop at the element .el4 if .el3 does not exists, .el2 will stop at el .el7
 
 ```javascript
 	var pairsB = new Fixuntil({ 
