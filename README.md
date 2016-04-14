@@ -17,7 +17,7 @@ var pairsA = new Fixuntil({
 
 ```
 
-With multiple possible targets to an element, the element .el1 will stop at the element .el3, if it exists, and will stop at the element .el4 if .el3 does not exists, .el2 will stop at el .el7
+With multiple possible targets to an element, the element .el1 will stop at the element .el3, if it exists, and will stop at the element .el4 if .el3 does not exists, .el2 will stop at .el7
 
 ```javascript
 	var pairsB = new Fixuntil({ 
